@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Herufi{% endblock %} — Predictive Analytics</title>
+  <meta name="description" content="{% block meta_description %}Predictive analytics for sports and business by Michael.{% endblock %}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind (standalone CDN for dev; replace with compiled output for prod) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            navy: { DEFAULT: '#0B1B2B', 800: '#122033', 700: '#1a2d42' },
+            teal:  { DEFAULT: '#19B5A6', 600: '#148f83' },
+            cream: '#F7F5F0',
+          },
+          fontFamily: {
+            sans:  ['Inter', 'sans-serif'],
+            serif: ['"Source Serif 4"', 'serif'],
+            mono:  ['"JetBrains Mono"', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- HTMX + Alpine -->
+  <script defer src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Chart.js (lazy-loaded per page) -->
+  {% block head_extra %}{% endblock %}
+
+  <style>
+    [x-cloak] { display: none !important; }
+    .prose-herufi { font-family: 'Source Serif 4', serif; }
+  </style>
+</head>
+<body class="bg-cream dark:bg-navy text-slate-700 dark:text-slate-300 font-sans antialiased transition-colors duration-300">
+
+  {% include "partials/nav.html" %}
+
+  <main id="main-content" class="min-h-screen">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

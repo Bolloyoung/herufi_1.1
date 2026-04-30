@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Insights{% endblock %}
+{% block meta_description %}Analytical posts on sports and business predictions.{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold text-navy dark:text-white mb-10">Insights</h1>
+
+  <!-- Filters -->
+  <form
+    method="get"
+    action="/insights"
+    class="flex flex-wrap gap-4 mb-10"
+    id="filters-form"
+  >
+    <div>
+      <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Domain</label>
+      <select name="domain" onchange="this.form.submit()"
+        class="border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 bg-white dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal">
+        <option value="">All</option>
+        <option value="sports" {% if domain == 'sports' %}selected{% endif %}>Sports</option>
+        <option value="business" {% if domain == 'business' %}selected{% endif %}>Business</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Tag</label>
+      <input name="tag" value="{{ tag or '' }}"
+        placeholder="e.g. NBA"
+        class="border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 bg-white dark:bg-navy-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal w-32" />
+    </div>
+    <div class="flex items-end">
+      <button type="submit" class="bg-teal hover:bg-teal-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors">Filter</button>
+    </div>
+  </form>
+
+  <!-- Grid -->
+  {% if posts %}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    {% for post in posts %}
+      {% include "partials/post_card.html" %}
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center gap-2">
+    {% if page > 1 %}
+    <a href="/insights?page={{ page - 1 }}&domain={{ domain or '' }}&tag={{ tag or '' }}"
+      class="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm hover:border-teal transition-colors">← Prev</a>
+    {% endif %}
+    <span class="px-4 py-2 text-sm text-slate-500">Page {{ page }}</span>
+    {% if has_next %}
+    <a href="/insights?page={{ page + 1 }}&domain={{ domain or '' }}&tag={{ tag or '' }}"
+      class="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm hover:border-teal transition-colors">Next →</a>
+    {% endif %}
+  </div>
+  {% else %}
+  <p class="text-slate-400 text-center py-24">No insights found. Try different filters.</p>
+  {% endif %}
+</div>
+{% endblock %}

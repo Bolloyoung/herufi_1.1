@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block meta_description %}{{ post.summary }}{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <!-- Meta -->
+  <div class="flex flex-wrap gap-2 mb-4">
+    {% set domain = post.domain %}
+    {% include "partials/tag_pill.html" %}
+    {% for tag in post.tags %}
+    <span class="inline-block bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-medium px-2 py-0.5 rounded-full">{{ tag }}</span>
+    {% endfor %}
+  </div>
+
+  <h1 class="text-4xl md:text-5xl font-bold text-navy dark:text-white mb-4 leading-tight">{{ post.title }}</h1>
+  <p class="text-lg text-slate-500 mb-6">{{ post.summary }}</p>
+
+  <p class="text-xs text-slate-400 font-mono mb-10">
+    {% if post.published_at %}Published {{ post.published_at.strftime('%B %d, %Y') }}{% endif %}
+    {% if post.author %}· {{ post.author.email }}{% endif %}
+  </p>
+
+  <!-- Hero chart -->
+  {% if post.hero_chart_config %}
+  <div class="bg-white dark:bg-navy-800 rounded-2xl p-6 mb-10 shadow-sm border border-slate-100 dark:border-slate-800">
+    <canvas id="hero-chart" role="img" aria-label="Hero chart for {{ post.title }}"></canvas>
+  </div>
+  {% endif %}
+
+  <!-- Body -->
+  <div class="prose prose-herufi prose-slate dark:prose-invert max-w-none">
+    {{ body_html | safe }}
+  </div>
+</article>
+{% endblock %}
+
+{% block scripts %}
+{% if post.hero_chart_config %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cfg = {{ post.hero_chart_config | tojson }};
+    new Chart(document.getElementById('hero-chart'), cfg);
+  });
+</script>
+{% endif %}
+{% endblock %}

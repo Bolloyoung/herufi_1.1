@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Track Record{% endblock %}
+{% block meta_description %}Backtested prediction outcomes and hit-rate statistics.{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold text-navy dark:text-white mb-4">Track Record</h1>
+  <p class="text-slate-500 mb-12">Every prediction I publish is resolved against actual outcomes. No cherry-picking.</p>
+
+  <!-- Aggregate stats -->
+  {% if stats %}
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+    <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 text-center shadow-sm">
+      <p class="text-3xl font-bold font-mono text-teal">{{ stats.total }}</p>
+      <p class="text-xs text-slate-400 mt-1">Total</p>
+    </div>
+    <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 text-center shadow-sm">
+      <p class="text-3xl font-bold font-mono text-teal">{{ stats.resolved }}</p>
+      <p class="text-xs text-slate-400 mt-1">Resolved</p>
+    </div>
+    <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 text-center shadow-sm">
+      <p class="text-3xl font-bold font-mono text-teal">{{ stats.correct }}</p>
+      <p class="text-xs text-slate-400 mt-1">Correct</p>
+    </div>
+    <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 text-center shadow-sm">
+      <p class="text-3xl font-bold font-mono {% if stats.hit_rate >= 0.6 %}text-emerald-500{% elif stats.hit_rate >= 0.5 %}text-amber-500{% else %}text-red-500{% endif %}">
+        {{ (stats.hit_rate * 100) | round(1) }}%
+      </p>
+      <p class="text-xs text-slate-400 mt-1">Hit Rate</p>
+    </div>
+  </div>
+
+  <!-- By-domain breakdown -->
+  {% if stats.by_domain %}
+  <div class="mb-12">
+    <h2 class="text-xl font-bold text-navy dark:text-white mb-4">By Domain</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% for dom, ds in stats.by_domain.items() %}
+      <div class="bg-white dark:bg-navy-800 rounded-xl p-5 border border-slate-100 dark:border-slate-800">
+        <p class="text-sm font-semibold uppercase tracking-wider {% if dom == 'sports' %}text-blue-500{% else %}text-emerald-500{% endif %} mb-3">{{ dom }}</p>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500">Total</span><span class="font-mono font-semibold">{{ ds.total }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500">Resolved</span><span class="font-mono font-semibold">{{ ds.resolved }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500">Hit Rate</span><span class="font-mono font-semibold">{{ ((ds.hit_rate) * 100) | round(1) }}%</span>
+        </div>
+        <div class="mt-3 bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+          <div class="bg-teal rounded-full h-2 transition-all" style="width: {{ (ds.hit_rate * 100) | round(0) }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  <!-- Equity curve placeholder -->
+  <div class="bg-white dark:bg-navy-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm">
+    <h2 class="text-lg font-bold text-navy dark:text-white mb-4">Cumulative Accuracy</h2>
+    <canvas id="equity-chart" height="100" role="img" aria-label="Cumulative prediction accuracy over time"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const ctx = document.getElementById('equity-chart');
+  if (!ctx) return;
+  const labels = {{ equity_labels | tojson }};
+  const data   = {{ equity_data  | tojson }};
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Running hit rate',
+        data,
+        borderColor: '#19B5A6',
+        backgroundColor: 'rgba(25,181,166,0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 0, max: 1, ticks: { format: { style: 'percent' } } }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

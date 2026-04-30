@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Predictions Dashboard{% endblock %}
+{% block meta_description %}Live and recent model outputs across sports and business.{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+    <div>
+      <h1 class="text-4xl font-bold text-navy dark:text-white">Predictions Dashboard</h1>
+      <p class="text-slate-500 mt-1">Latest model outputs — updated as new predictions are published.</p>
+    </div>
+    <!-- Domain filter -->
+    <div class="flex gap-2" x-data="{ active: '{{ domain or 'all' }}' }">
+      <a href="/dashboard" :class="active === 'all' ? 'bg-teal text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400'"
+        class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors hover:border-teal">All</a>
+      <a href="/dashboard?domain=sports" :class="active === 'sports' ? 'bg-blue-500 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400'"
+        class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors">Sports</a>
+      <a href="/dashboard?domain=business" :class="active === 'business' ? 'bg-emerald-500 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400'"
+        class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors">Business</a>
+    </div>
+  </div>
+
+  {% if predictions %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for pred in predictions %}
+      {% include "partials/prediction_card.html" %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-slate-400 text-center py-24">No predictions yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

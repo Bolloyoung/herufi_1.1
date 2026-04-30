@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}News{% endblock %}
+{% block meta_description %}Updates, press mentions, and commentary.{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold text-navy dark:text-white mb-12">News &amp; Updates</h1>
+
+  {% if items %}
+  <div class="flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
+    {% for item in items %}
+    <div class="py-8">
+      <p class="text-xs font-mono text-slate-400 mb-2">
+        {% if item.published_at %}{{ item.published_at.strftime('%B %d, %Y') }}{% endif %}
+        {% if item.source_url %} · <a href="{{ item.source_url }}" target="_blank" rel="noopener" class="hover:text-teal underline">Source ↗</a>{% endif %}
+      </p>
+      <h2 class="text-xl font-bold text-navy dark:text-white mb-3">{{ item.title }}</h2>
+      <div class="prose prose-sm prose-slate dark:prose-invert max-w-none">{{ item.body_html | safe }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center gap-2 mt-12">
+    {% if page > 1 %}
+    <a href="/news?page={{ page - 1 }}" class="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm hover:border-teal transition-colors">← Prev</a>
+    {% endif %}
+    {% if has_next %}
+    <a href="/news?page={{ page + 1 }}" class="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm hover:border-teal transition-colors">Next →</a>
+    {% endif %}
+  </div>
+  {% else %}
+  <p class="text-slate-400 text-center py-24">No news items yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% block meta_description %}Get in touch with Michael about analytics, collaboration, or bookings.{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold text-navy dark:text-white mb-4">Contact</h1>
+  <p class="text-slate-500 mb-10">Have a question about a prediction, want to collaborate, or discuss a project? I'd love to hear from you.</p>
+
+  <!-- Contact form -->
+  <form
+    hx-post="/api/contact"
+    hx-target="#form-result"
+    hx-swap="innerHTML"
+    class="space-y-5 bg-white dark:bg-navy-800 rounded-2xl p-8 border border-slate-100 dark:border-slate-800 shadow-sm"
+  >
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="name">Name</label>
+        <input id="name" name="name" type="text" required placeholder="Your name"
+          class="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-navy focus:outline-none focus:ring-2 focus:ring-teal text-sm" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="email">Email</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com"
+          class="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-navy focus:outline-none focus:ring-2 focus:ring-teal text-sm" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="subject">Subject</label>
+      <input id="subject" name="subject" type="text" required placeholder="What's this about?"
+        class="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-navy focus:outline-none focus:ring-2 focus:ring-teal text-sm" />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="message">Message</label>
+      <textarea id="message" name="message" required rows="5" placeholder="Your message..."
+        class="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-navy focus:outline-none focus:ring-2 focus:ring-teal text-sm resize-none"></textarea>
+    </div>
+    <button type="submit"
+      class="w-full bg-teal hover:bg-teal-600 text-white font-semibold py-3 rounded-xl transition-colors text-sm">
+      Send Message
+    </button>
+    <div id="form-result" class="text-sm text-teal text-center"></div>
+  </form>
+
+  <!-- Booking -->
+  <div class="mt-10 p-6 rounded-2xl bg-navy/5 dark:bg-white/5 border border-slate-200 dark:border-slate-800 text-center">
+    <p class="font-semibold text-navy dark:text-white mb-2">Prefer to book a call?</p>
+    <p class="text-slate-500 text-sm mb-4">Schedule a 30-minute slot directly in my calendar.</p>
+    <!-- TODO(mike): Replace with your real Calendly/Cal.com link -->
+    <a href="#" target="_blank" rel="noopener"
+      class="inline-block bg-navy dark:bg-teal text-white font-semibold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity">
+      Book a meeting →
+    </a>
+  </div>
+</div>
+{% endblock %}

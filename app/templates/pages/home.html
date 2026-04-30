@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="bg-navy text-white py-24 px-4">
+  <div class="max-w-4xl mx-auto text-center">
+    <p class="text-teal font-mono text-sm tracking-widest uppercase mb-4">Data · Models · Accountability</p>
+    <!-- TODO(mike): Replace with your real name if different -->
+    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+      Michael<br /><span class="text-teal">Herufi</span>
+    </h1>
+    <p class="text-xl md:text-2xl text-slate-300 mb-10 max-w-2xl mx-auto">
+      Predictive Analytics for Sports &amp; Business — rigorous models, transparent methodology, tracked outcomes.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/insights" class="bg-teal hover:bg-teal-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+        Browse Insights
+      </a>
+      <a href="/dashboard" class="border border-slate-600 hover:border-teal text-slate-300 hover:text-teal font-semibold px-8 py-3 rounded-xl transition-colors">
+        Predictions Dashboard
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Insights -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="flex items-center justify-between mb-10">
+    <h2 class="text-3xl font-bold text-navy dark:text-white">Featured Insights</h2>
+    <a href="/insights" class="text-teal hover:underline text-sm font-semibold">View all →</a>
+  </div>
+  {% if featured_posts %}
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for post in featured_posts %}
+      {% set post = post %}
+      {% include "partials/post_card.html" %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-slate-400 text-center py-16">No insights published yet. Check back soon.</p>
+  {% endif %}
+</section>
+
+<!-- Stats banner -->
+{% if stats %}
+<section class="bg-navy/5 dark:bg-white/5 border-y border-slate-200 dark:border-slate-800 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div>
+      <p class="text-3xl font-bold font-mono text-teal">{{ stats.total }}</p>
+      <p class="text-sm text-slate-500 mt-1">Total Predictions</p>
+    </div>
+    <div>
+      <p class="text-3xl font-bold font-mono text-teal">{{ (stats.hit_rate * 100) | round(1) }}%</p>
+      <p class="text-sm text-slate-500 mt-1">Hit Rate</p>
+    </div>
+    <div>
+      <p class="text-3xl font-bold font-mono text-teal">{{ stats.resolved }}</p>
+      <p class="text-sm text-slate-500 mt-1">Resolved</p>
+    </div>
+    <div>
+      <p class="text-3xl font-bold font-mono text-teal">{{ stats.correct }}</p>
+      <p class="text-sm text-slate-500 mt-1">Correct Calls</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Subscribe CTA -->
+<section class="max-w-xl mx-auto px-4 py-20 text-center">
+  <h2 class="text-2xl font-bold text-navy dark:text-white mb-3">Stay in the loop</h2>
+  <p class="text-slate-500 mb-6">New insights and predictions delivered to your inbox. No spam.</p>
+  <form
+    hx-post="/api/subscribe"
+    hx-target="#subscribe-msg"
+    hx-swap="innerHTML"
+    class="flex gap-3"
+  >
+    <input
+      type="email"
+      name="email"
+      required
+      placeholder="you@example.com"
+      class="flex-1 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-teal text-sm"
+    />
+    <button type="submit" class="bg-teal hover:bg-teal-600 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm">
+      Subscribe
+    </button>
+  </form>
+  <div id="subscribe-msg" class="mt-3 text-sm text-teal"></div>
+</section>
+{% endblock %}
